@@ -1,0 +1,7 @@
+{
+  "terminal.integrated.enableMultiLinePasteWarning": false,
+  "window.zoomLevel": 0,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true
+  }
+}
