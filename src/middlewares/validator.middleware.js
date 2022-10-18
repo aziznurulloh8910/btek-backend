@@ -2,7 +2,11 @@ const {body, param, query, matchedData, validationResult} = require("express-val
 
 exports.basicUserCreds = [
   body("email").isEmail().withMessage("Email is invalid"),
-  body("password").isLength({min:4}).withMessage("Password length must be 4 char or more")
+  body("password").isStrongPassword({minLength: 8}).withMessage("Password length must be 8 char or more")
+    .isStrongPassword({minUppercase: 1}).withMessage("Password must contain uppercase 1 or more")
+    .isStrongPassword({minLowercase: 1}).withMessage("Password must contain lowercase 1 or more")
+    .isStrongPassword({minNumbers: 1}).withMessage("Password must contain number 1 or more")
+    .isStrongPassword({minSymbols: 1}).withMessage("Password must contain symbol 1 or more")
 ];
 
 exports.paramsUUID = [
