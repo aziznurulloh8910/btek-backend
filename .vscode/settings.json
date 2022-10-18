@@ -1,6 +1,6 @@
 {
   "terminal.integrated.enableMultiLinePasteWarning": false,
-  "window.zoomLevel": 0,
+  "window.zoomLevel": -1,
   "editor.codeActionsOnSave": {
     "source.fixAll": true
   }
