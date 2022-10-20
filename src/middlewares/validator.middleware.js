@@ -9,6 +9,10 @@ exports.basicUserCreds = [
     .isStrongPassword({minSymbols: 1}).withMessage("Password must contain symbol 1 or more")
 ];
 
+exports.validEmail = [
+  body("email").isEmail().withMessage("Email is invalid")
+];
+
 exports.paramsUUID = [
   param("id").isUUID(4).withMessage("Invalid ID")
 ];
