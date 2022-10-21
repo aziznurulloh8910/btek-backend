@@ -4,6 +4,7 @@ const profileModel = require("../models/profile.model");
 const forgotPasswordModel = require("../models/forgorPassword.model");
 const argon = require("argon2");
 const jwt = require("jsonwebtoken");
+const nodemailer =  require("nodemailer");
 
 exports.login = async (req, res) => {
   try {
@@ -73,6 +74,21 @@ exports.forgotPassword = async(req, res) => {
       
       const forgot = await forgotPasswordModel.insertForgotPassword(req.body);
       
+      let transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: process.env.EMAIL,
+          pass: process.env.PASS_EMAIL
+        },
+      });
+      
+      await transporter.sendMail({
+        from: process.env.EMAIL, 
+        to: req.body.email, 
+        subject: "Code Confirmation",
+        html: "<b>CODE\n"+req.body.code+"</b>"
+      });
+
       if(forgot.rowCount){
         return res.json({
           success: true,
