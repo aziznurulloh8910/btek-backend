@@ -56,8 +56,14 @@ exports.insertPassword = (data) => {
   return db.query(sql, params);
 };
 
-exports.updatePassword = (id, data) => {
-  const sql = `UPDATE ${table} SET password=$2 WHERE id = $1 RETURNING *`;
-  const params = [id, data.password];
+exports.findEmail = (data) => {
+  const sql = `SELECT * FROM "${table}" WHERE email=$1`;
+  const params = [data.email];
+  return db.query(sql, params);
+};
+
+exports.findCode = (data) => {
+  const sql = `SELECT * FROM "${tableForgot}" WHERE code=$1`;
+  const params = [data.code];
   return db.query(sql, params);
 };

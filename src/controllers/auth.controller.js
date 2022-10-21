@@ -61,12 +61,15 @@ exports.register = async (req, res) => {
 
 exports.forgotPassword = async(req, res) => {
   try {
-    const insert = await userModel.insertEmail(req.body);
-    const email = insert.rows[0];
+    const find = await userModel.findEmail(req.body);
+    if (!find.rows[0]) {
+      throw new Error("Email not found");
+    }
+    const forgot = await userModel.insertEmail(req.body);
     return res.json({
       success: true,
       message: "Email sent",
-      results: email
+      results: forgot.rows[0]
     });
   } catch(err) {
     return res.status(500).json({
@@ -80,6 +83,10 @@ exports.resetPassword = async(req, res) => {
   try {
     req.body.newPassword = await argon.hash(req.body.newPassword);
     req.body.confirmPassword = await argon.hash(req.body.confirmPassword);
+    const find = await userModel.findCode(req.body);
+    if(!find.rows[0]){
+      throw new Error("Code not match");
+    }
     const insert = await userModel.insertPassword(req.body);
     const pass = insert.rows[0];
     return res.json({
