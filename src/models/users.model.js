@@ -1,7 +1,6 @@
 const db = require("../helpers/db");
 
 const table = "users";
-const tableForgot = "forgotPassword";
 
 exports.insertUser = (data) => {
   const sql = `INSERT INTO ${table} ("email", "password") VALUES ($1, $2) RETURNING *`;
@@ -41,29 +40,5 @@ exports.editUser = (id, data) => {
 exports.deleteUser = (id) => {
   const sql = `DELETE FROM ${table} WHERE id = $1 RETURNING *`;
   const params = [id];
-  return db.query(sql, params);
-};
-
-exports.insertEmail = (data) => {
-  const sql = `INSERT INTO "${tableForgot}" ("email") VALUES ($1) RETURNING *`;
-  const params = [data.email];
-  return db.query(sql, params);
-};
-
-exports.insertPassword = (data) => {
-  const sql = `INSERT INTO "${tableForgot}" ("code", "email", "newPassword", "confirmPassword") VALUES ($1, $2, $3, $4) RETURNING *`;
-  const params = [data.code, data.email, data.newPassword, data.confirmPassword];
-  return db.query(sql, params);
-};
-
-exports.findEmail = (data) => {
-  const sql = `SELECT * FROM "${table}" WHERE email=$1`;
-  const params = [data.email];
-  return db.query(sql, params);
-};
-
-exports.findCode = (data) => {
-  const sql = `SELECT * FROM "${tableForgot}" WHERE code=$1`;
-  const params = [data.code];
   return db.query(sql, params);
 };

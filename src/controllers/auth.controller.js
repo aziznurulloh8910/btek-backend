@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 const userModel = require("../models/users.model");
 const profileModel = require("../models/profile.model");
+const forgotPasswordModel = require("../models/forgorPassword.model");
 const argon = require("argon2");
 const jwt = require("jsonwebtoken");
 
@@ -61,16 +62,31 @@ exports.register = async (req, res) => {
 
 exports.forgotPassword = async(req, res) => {
   try {
-    const find = await userModel.findEmail(req.body);
-    if (!find.rows[0]) {
-      throw new Error("Email not found");
+    const {customAlphabet} = await import("nanoid");
+    const nanoid = customAlphabet("0123456789", 6);
+    req.body.code = nanoid();
+
+    const user =  await userModel.selectUserByEmail(req.body.email);
+    if(user.rowCount){
+      const selectedUser = user.rows[0];
+      req.body.userId = selectedUser.id;
+      
+      const forgot = await forgotPasswordModel.insertForgotPassword(req.body);
+      
+      if(forgot.rowCount){
+        return res.json({
+          success: true,
+          message: "Forgot password request has been sent!",
+          results: forgot
+        });
+      }
+    } else {
+      return res.status(400).json({
+        success: false,
+        message: "Email not found"
+      });
     }
-    const forgot = await userModel.insertEmail(req.body);
-    return res.json({
-      success: true,
-      message: "Email sent",
-      results: forgot.rows[0]
-    });
+
   } catch(err) {
     return res.status(500).json({
       success: false,
@@ -81,19 +97,28 @@ exports.forgotPassword = async(req, res) => {
 
 exports.resetPassword = async(req, res) => {
   try {
-    req.body.newPassword = await argon.hash(req.body.newPassword);
-    req.body.confirmPassword = await argon.hash(req.body.confirmPassword);
-    const find = await userModel.findCode(req.body);
-    if(!find.rows[0]){
-      throw new Error("Code not match");
+    const user = await forgotPasswordModel.selectForgotPassword(req.body);
+    if(user.rowCount){
+      const selectedUser = user.rows[0];
+      req.body.password = await argon.hash(req.body.newPassword);
+
+      const updatePassword = await userModel.editUser(selectedUser.userId, req.body);
+      if(updatePassword.rowCount){
+        return res.json({
+          success: true,
+          message: "Reset password successfully"
+        });
+      }
+      return res.status(500).json({
+        success: false,
+        message: "Unexpected error on updating data!"
+      });
+    } else {
+      return res.status(400).json({
+        success: false,
+        message: "Email or code cannot be identified"
+      });
     }
-    const insert = await userModel.insertPassword(req.body);
-    const pass = insert.rows[0];
-    return res.json({
-      success: true,
-      message: "New password sent",
-      results: pass
-    });
   } catch(err) {
     return res.status(500).json({
       success: false,
