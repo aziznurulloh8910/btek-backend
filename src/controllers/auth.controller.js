@@ -93,7 +93,7 @@ exports.forgotPassword = async(req, res) => {
         return res.json({
           success: true,
           message: "Forgot password request has been sent!",
-          results: forgot
+          results: forgot.rows
         });
       }
     } else {
