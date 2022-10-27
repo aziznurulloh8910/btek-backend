@@ -24,6 +24,9 @@ exports.readProfileById = async(req, res)=> {
 
 exports.updateProfile = async(req, res) => {
   try{
+    if(req.file) {
+      req.body.picture = req.file.filename;
+    }
     const profile = await profileModel.updateProfileById(req.userData.id, req.body);
     if(profile.rowCount){
       return res.json({
