@@ -49,7 +49,8 @@ exports.register = async (req, res) => {
       if(profile.rowCount){
         return res.json({
           success: true,
-          message: "Register successfully"
+          message: "Register successfully",
+          results: createdUser,
         });
       }
     }
@@ -93,7 +94,7 @@ exports.forgotPassword = async(req, res) => {
         return res.json({
           success: true,
           message: "Forgot password request has been sent!",
-          results: forgot.rows
+          results: forgot.rows[0]
         });
       }
     } else {
@@ -122,7 +123,8 @@ exports.resetPassword = async(req, res) => {
       if(updatePassword.rowCount){
         return res.json({
           success: true,
-          message: "Reset password successfully"
+          message: "Reset password successfully",
+          results: updatePassword.rows[0],
         });
       }
       return res.status(500).json({
