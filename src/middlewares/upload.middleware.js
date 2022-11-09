@@ -1,5 +1,5 @@
 const multer = require("multer");
-// const path =  require("path");
+const path =  require("path");
 const storageCloudinary =  require("./cloudinary.middleware");
 
 const extGenerator = (mimeType) => {
@@ -8,18 +8,19 @@ const extGenerator = (mimeType) => {
   return sortedExt[mime.indexOf(mimeType)];
 };
 
-// const storage = multer.diskStorage({
-//   destination: (req, file, cb) => {
-//     cb(null, path.join("assets", "uploads"));
-//   },
-//   filename: async (req, file, cb) => {
-//     const ext = extGenerator(file.mimetype);
-//     const { customAlphabet } = await import("nanoid");
-//     const nanoid = customAlphabet("0123456789",6);
+// eslint-disable-next-line no-unused-vars
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join("assets", "uploads"));
+  },
+  filename: async (req, file, cb) => {
+    const ext = extGenerator(file.mimetype);
+    const { customAlphabet } = await import("nanoid");
+    const nanoid = customAlphabet("0123456789",6);
     
-//     cb(null, nanoid().concat(`.${ext}`));
-//   }
-// });
+    cb(null, nanoid().concat(`.${ext}`));
+  }
+});
 
 const fileFilter = (req, file, cb) => {
   if(extGenerator(file.mimetype)) {
@@ -30,6 +31,7 @@ const fileFilter = (req, file, cb) => {
 };
 
 const mult  = multer({ 
+  storage:
   storageCloudinary,
   fileFilter,
   limits : {

@@ -18,7 +18,7 @@ const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: async (req, file) => {
     const ext = extGenerator(file.mimetype);
-    const randString = await randomString(10);
+    const randString = await randomString(5);
     return {
       folder: "public",
       format: ext,
