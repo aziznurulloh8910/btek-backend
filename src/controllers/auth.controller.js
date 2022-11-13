@@ -87,6 +87,7 @@ exports.forgotPassword = async(req, res) => {
         from: process.env.EMAIL, 
         to: req.body.email, 
         subject: "Code Confirmation",
+        text: "Code Confirmation",
         html: "<b>CODE\n"+req.body.code+"</b>"
       });
 
