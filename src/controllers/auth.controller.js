@@ -5,7 +5,6 @@ const forgotPasswordModel = require("../models/forgorPassword.model");
 const argon = require("argon2");
 const jwt = require("jsonwebtoken");
 const nodemailer =  require("nodemailer");
-require("dotenv").config();
 
 exports.login = async (req, res) => {
   try {
@@ -79,15 +78,13 @@ exports.forgotPassword = async(req, res) => {
       let transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
-          // user: "1197050023@student.uinsgd.ac.id",
-          // pass: "yelegavyqindcuqy"
-          user: process.env.EMAIL,
-          pass: process.env.PASS_EMAIL
+          user: "1197050023@student.uinsgd.ac.id",
+          pass: "yelegavyqindcuqy"
         },
       });
       
       await transporter.sendMail({
-        from: process.env.EMAIL, 
+        from: "1197050023@student.uinsgd.ac.id", 
         to: req.body.email, 
         subject: "Code Confirmation",
         text: "Code Confirmation",
